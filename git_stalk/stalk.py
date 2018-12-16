@@ -34,11 +34,12 @@ from dateutil import tz
 from docopt import docopt, DocoptExit
 from prettytable import PrettyTable
 from huepy import *
+from huefunctions import *
 
 # Git Stalk imports
 from git_stalk import __version__
 #Put token="?access_token=YOUR_TOKEN" for testing
-token=""
+token="?access_token=9919a50dcc61f63ae0986d1f198869568f877900"
 github_uri = "https://api.github.com/users/"
 StarredRepo = namedtuple('StarredRepo', ['name', 'language', 'time'])
 
@@ -157,14 +158,16 @@ def get_basic_info(user):
     user_link+=token
     user_profile = requests.get(user_link)
     profile = user_profile.json()
-    print(lightblue("Name: {0}".format(lightred(profile["name"]))))
-    print(lightblue("Company: {0}".format(lightred(profile["company"]))))
-    print(lightblue("Bio: {0}".format(lightred(profile["bio"]))))
-    print(lightblue("Followers: {0}".format(lightred(profile["followers"]))))
-    print(lightblue("Following: {0}".format(lightred(profile["following"]))))
-    print(lightblue("Public Repos: {0}".format(lightred(profile["public_repos"]))))
-    print(lightblue("Public Gists: {0}".format(lightred(profile["public_gists"]))))
-    print(lightblue("Open for hiring: {0} \n".format(lightred(profile["hireable"]))))
+
+    #These functions are imported from huefunctions.py to print string in a colour.
+    piLiBlue("Name: {0}".format(lightred(profile["name"])))
+    piLiBlue("Company: {0}".format(lightred(profile["company"])))
+    piLiBlue("Bio: {0}".format(lightred(profile["bio"])))
+    piLiBlue("Followers: {0}".format(lightred(profile["followers"])))
+    piLiBlue("Following: {0}".format(lightred(profile["following"])))
+    piLiBlue("Public Repos: {0}".format(lightred(profile["public_repos"])))
+    piLiBlue("Public Gists: {0}".format(lightred(profile["public_gists"])))
+    piLiBlue("Open for hiring: {0} \n".format(lightred(profile["hireable"])))
 
 
 def convert_to_local(string):
@@ -193,7 +196,7 @@ def get_contributions(user, latest, date_text, org=None):
     is added to the table
     and prints the table.
     """
-    print(lightblue("Contributions Today: "))
+    piLiBlue("Contributions Today: ")
 
     if latest:
         table = PrettyTable([orange("Type"), orange("Repository"), orange("Time"), orange("Details")])
@@ -244,8 +247,8 @@ def get_contributions(user, latest, date_text, org=None):
             loopcount=loopcount+1        
         print(table)
 
-    print(lightred("{0} have made {1} public contribution(s) {2}.\n".format(
-        user, str(len(latest)), date_text)))
+    piLiRed("{0} have made {1} public contribution(s) {2}.\n".format(
+        user, str(len(latest)), date_text))
 
 
 def get_other_activity(user, other, date_text):
@@ -254,7 +257,7 @@ def get_other_activity(user, other, date_text):
     creates a table
     and prints the table.
     """
-    print(lightblue("Other Activity {0}: ".format(date_text)))
+    piLiBlue("Other Activity {0}: ".format(date_text))
 
     if other:
         other_table = PrettyTable([orange("Type"), orange("Repository"), orange("Time"), orange("Details")])
@@ -278,8 +281,8 @@ def get_other_activity(user, other, date_text):
 
         print(other_table)
 
-    print(lightred("{0} have done {1} other public activit(y/ies) {2}.\n".format(
-        user, str(len(other)), date_text)))
+    piLiRed("{0} have done {1} other public activit(y/ies) {2}.\n".format(
+        user, str(len(other)), date_text))
 
 
 def display_stars(user, stars, date_text):
@@ -288,7 +291,7 @@ def display_stars(user, stars, date_text):
     creates a table
     and prints the table.
     """
-    print(lightblue("Starred {0}: ".format(date_text)))
+    piLiBlue("Starred {0}: ".format(date_text))
 
     if stars:
         star_table = PrettyTable([orange("Repository"), orange("Language"), orange("Time")])
@@ -310,8 +313,8 @@ def display_stars(user, stars, date_text):
 
         print(star_table)
 
-    print(lightred("{0} have starred {1} repo(s) {2}.".format(
-        user, str(len(stars)), date_text)))
+    piLiRed("{0} have starred {1} repo(s) {2}.".format(
+        user, str(len(stars)), date_text))
 
 
 def fill_todays_data(user, today, events, latest, stars, other):

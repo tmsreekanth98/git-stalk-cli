@@ -38,8 +38,8 @@ from huefunctions import *
 
 # Git Stalk imports
 from git_stalk import __version__
-#Put token="?access_token=YOUR_TOKEN" for testing
-token="?access_token=9919a50dcc61f63ae0986d1f198869568f877900"
+# Put token="?access_token=YOUR_TOKEN" for testing
+token = ""
 github_uri = "https://api.github.com/users/"
 StarredRepo = namedtuple('StarredRepo', ['name', 'language', 'time'])
 
@@ -47,10 +47,11 @@ StarredRepo = namedtuple('StarredRepo', ['name', 'language', 'time'])
 def jft(user):
     """ Return userlink statuscode """
     user_link = "{0}{1}".format(github_uri, str(user))
-    userlink+=token
+    userlink += token
     response = requests.get(user_link)
 
     return response.status_code
+
 
 def get_event(string):
     """Returns the event"""
@@ -104,7 +105,7 @@ def check_for_fork(link, user):
     tukde = link.split('/')
 
     if tukde[len(tukde) - 2] == user:
-        link+=token
+        link += token
         response = requests.get(link)
         repo = response.json()
         if not repo["fork"]:
@@ -127,7 +128,7 @@ def get_local_time(string):
 def get_following_users(user):
     """prints the users followed by current user"""
     following_link = "{0}{1}/following".format(github_uri, str(user))
-    following_link+=token
+    following_link += token
     following_users = requests.get(following_link).json()
 
     print("Following : ")
@@ -155,11 +156,11 @@ def get_followers(user):
 def get_basic_info(user):
     """Prints the user's basic info."""
     user_link = "{0}{1}".format(github_uri, str(user))
-    user_link+=token
+    user_link += token
     user_profile = requests.get(user_link)
     profile = user_profile.json()
 
-    #These functions are imported from huefunctions.py to print string in a colour.
+    # These functions are imported from huefunctions.py to print string in a colour.
     piLiBlue("Name: {0}".format(lightred(profile["name"])))
     piLiBlue("Company: {0}".format(lightred(profile["company"])))
     piLiBlue("Bio: {0}".format(lightred(profile["bio"])))
@@ -199,9 +200,14 @@ def get_contributions(user, latest, date_text, org=None):
     piLiBlue("Contributions Today: ")
 
     if latest:
-        table = PrettyTable([orange("Type"), orange("Repository"), orange("Time"), orange("Details")])
+        table = PrettyTable([
+                    orange("Type"),
+                    orange("Repository"),
+                    orange("Time"),
+                    orange("Details"),
+                ])
 
-        loopcount=0
+        loopcount = 0
         for event in latest:
             repo_name = event["repo"]["name"]
 
@@ -214,7 +220,7 @@ def get_contributions(user, latest, date_text, org=None):
                     curr_org += c
 
                 if curr_org == org:
-                    if loopcount%2 == 0:
+                    if loopcount % 2 == 0:
                         table.add_row([
                             lightpurple(get_event(event["type"])),
                             lightpurple(event["repo"]["name"]),
@@ -229,7 +235,7 @@ def get_contributions(user, latest, date_text, org=None):
                             lightgreen(get_details(event)),
                         ])
             else:
-                if loopcount%2 == 0:
+                if loopcount % 2 == 0:
                     table.add_row([
                         lightpurple(get_event(event["type"])),
                         lightpurple(event["repo"]["name"]),
@@ -244,7 +250,7 @@ def get_contributions(user, latest, date_text, org=None):
                         lightgreen(get_details(event)),
                     ])
 
-            loopcount=loopcount+1        
+            loopcount = loopcount + 1        
         print(table)
 
     piLiRed("{0} have made {1} public contribution(s) {2}.\n".format(
@@ -260,12 +266,17 @@ def get_other_activity(user, other, date_text):
     piLiBlue("Other Activity {0}: ".format(date_text))
 
     if other:
-        other_table = PrettyTable([orange("Type"), orange("Repository"), orange("Time"), orange("Details")])
+        other_table = PrettyTable([
+                          orange("Type"),
+                          orange("Repository"),
+                          orange("Time"),
+                          orange("Details"),
+                      ])
 
-        loopcount=0
+        loopcount = 0
         for event in other:
 
-            if loopcount%2 == 0:
+            if loopcount % 2 == 0:
                 other_table.add_row([
                     lightpurple(get_event(event["type"])), lightpurple(event["repo"]["name"]),
                     lightpurple(get_local_time(event["created_at"])),
@@ -277,7 +288,7 @@ def get_other_activity(user, other, date_text):
                     lightgreen(get_local_time(event["created_at"])),
                     lightgreen(get_details(event)),
                 ])
-            loopcount=loopcount+1
+            loopcount = loopcount + 1
 
         print(other_table)
 
@@ -294,10 +305,14 @@ def display_stars(user, stars, date_text):
     piLiBlue("Starred {0}: ".format(date_text))
 
     if stars:
-        star_table = PrettyTable([orange("Repository"), orange("Language"), orange("Time")])
-        loopcount=0
+        star_table = PrettyTable([
+                         orange("Repository"),
+                         orange("Language"),
+                         orange("Time")
+                     ])
+        loopcount = 0
         for starred_repo in stars:
-            if loopcount%2 == 0:
+            if loopcount % 2 == 0:
                 star_table.add_row([
                     lightpurple(starred_repo["repo"]["name"]),
                     lightpurple(get_language_for_repo(starred_repo["repo"]["url"])),
@@ -309,7 +324,7 @@ def display_stars(user, stars, date_text):
                     lightgreen(get_language_for_repo(starred_repo["repo"]["url"])),
                     lightgreen(get_local_time(starred_repo["created_at"])),
                 ])
-            loopcount=loopcount+1
+            loopcount = loopcount + 1
 
         print(star_table)
 
@@ -425,7 +440,7 @@ def show_contri(args=None):
     user = args["<name>"]
     today = str(datetime.datetime.now().strftime("%Y-%m-%d"))
     link = "{0}{1}/events".format(github_uri, str(user))
-    link+=token
+    link += token
     
     response = requests.get(link)
 
